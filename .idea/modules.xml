@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/java-demo.iml" filepath="$PROJECT_DIR$/java-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-api/java-demo-api.iml" filepath="$PROJECT_DIR$/java-demo-api/java-demo-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-client/java-demo-client.iml" filepath="$PROJECT_DIR$/java-demo-client/java-demo-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-command/java-demo-command.iml" filepath="$PROJECT_DIR$/java-demo-command/java-demo-command.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-domain/java-demo-domain.iml" filepath="$PROJECT_DIR$/java-demo-domain/java-demo-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-service/java-demo-service.iml" filepath="$PROJECT_DIR$/java-demo-service/java-demo-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-demo-utility/java-demo-utility.iml" filepath="$PROJECT_DIR$/java-demo-utility/java-demo-utility.iml" />
+    </modules>
+  </component>
+</project>

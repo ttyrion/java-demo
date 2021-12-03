@@ -19,10 +19,13 @@
         <module>java-demo-command</module>
         <module>java-demo-domain</module>
         <module>java-demo-service</module>
+        <module>java-demo-utility</module>
     </modules>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
+        <apm-toolkit.version>8.8.0</apm-toolkit.version>
+        <springfox-swagger2-version>3.0.0</springfox-swagger2-version>
     </properties>
     <dependencies>
         <dependency>
@@ -40,14 +43,63 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-logback-1.x</artifactId>
+            <version>${apm-toolkit.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox-swagger2-version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+            <!--It is the spring-boot repackage goal that repackages the JAR produced by maven
+            to specify the main class
+            and make it executable using an embedded container.-->
+
+            <!--So,Once spring-boot-maven-plugin has been included in your pom.xml,
+            it automatically tries to rewrite archives to make them executable
+            by using the spring-boot:repackage goal.-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash;Enum AbstractPackagerMojo.LayoutType&ndash;&gt;-->
+<!--                    <layout>NONE</layout>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
