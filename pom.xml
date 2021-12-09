@@ -26,6 +26,9 @@
         <java.version>1.8</java.version>
         <apm-toolkit.version>8.8.0</apm-toolkit.version>
         <springfox-swagger2-version>3.0.0</springfox-swagger2-version>
+        <retrofit-verison>2.9.0</retrofit-verison>
+        <apache-commons-beanutils.version>1.9.4</apache-commons-beanutils.version>
+        <hystrix-version>1.5.18</hystrix-version>
     </properties>
     <dependencies>
         <dependency>
@@ -79,6 +82,31 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox-swagger2-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit-verison}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>${retrofit-verison}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>${hystrix-version}</version>
+        </dependency>
+
+        <!--https://commons.apache.org/proper/commons-beanutils/javadocs/v1.9.4/apidocs/index.html-->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${apache-commons-beanutils.version}</version>
         </dependency>
 
     </dependencies>
