@@ -29,6 +29,7 @@
         <retrofit-verison>2.9.0</retrofit-verison>
         <apache-commons-beanutils.version>1.9.4</apache-commons-beanutils.version>
         <hystrix-version>1.5.18</hystrix-version>
+        <rxjava-version>1.3.8</rxjava-version>
     </properties>
     <dependencies>
         <dependency>
@@ -107,6 +108,12 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${apache-commons-beanutils.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava-version}</version>
         </dependency>
 
     </dependencies>

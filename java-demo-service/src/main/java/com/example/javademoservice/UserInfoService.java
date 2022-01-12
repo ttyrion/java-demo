@@ -1,11 +1,16 @@
 package com.example.javademoservice;
 
-import com.example.javademoclient.github.GithubClient;
 import com.example.javademocommand.github.GithubCommand;
+import com.example.javademocommand.github.GithubObservableCommand;
 import com.example.javademodomain.github.GithubUser;
-import com.example.javademodomain.github.GithubUserResponse;
-import com.example.javademoutility.bean.DemoApplicationContext;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.stereotype.Component;
+import rx.Observable;
+import rx.Observer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description:
@@ -16,12 +21,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoService {
     public GithubUser user(int userId) {
-        GithubClient githubClient = DemoApplicationContext.getBean(GithubClient.class);
-        GithubUserResponse response = githubClient.user(userId, null);
-        if (response != null) {
-            return new GithubUser(response.getId(), response.getLogin(), response.getAvatar_url());
+        GithubObservableCommand githubObservableCommand = new GithubObservableCommand(userId);
+
+        List<GithubUser> userList = new ArrayList<>();
+
+        Observable<GithubUser> o1 = githubObservableCommand.observe();
+        if (o1 == null) {
+            System.out.println("UserInfoService: command observe error.");
+            return GithubUser.builder().build();
         }
 
-        return null;
+        o1.subscribe(new Observer(){
+
+            @Override
+            public void onCompleted() {
+                System.out.println("UserInfoService: onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("UserInfoService: onError" + e);
+            }
+
+            @Override
+            public void onNext(Object o) {
+                if (o instanceof GithubUser) {
+                    System.out.println("UserInfoService: onNext_" + o);
+                    userList.add((GithubUser)o);
+                }
+            }
+        });
+
+        System.out.println("UserInfoService:" + userId);
+
+        GithubCommand githubCommand = new GithubCommand(userId);
+        return githubCommand.execute();
     }
 }

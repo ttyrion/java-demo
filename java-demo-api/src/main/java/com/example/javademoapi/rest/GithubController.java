@@ -1,11 +1,9 @@
 package com.example.javademoapi.rest;
 
 import com.example.javademodomain.github.GithubUser;
-import com.example.javademodomain.hello.UserInfo;
 import com.example.javademoservice.UserInfoService;
 import com.example.javademoutility.log.LoggerProxy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
