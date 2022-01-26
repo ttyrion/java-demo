@@ -11,6 +11,7 @@ import rx.Observer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @Description:
@@ -21,6 +22,11 @@ import java.util.List;
 @Component
 public class UserInfoService {
     public GithubUser user(int userId) {
+        GithubCommand githubCommand = new GithubCommand(userId);
+        return githubCommand.execute();
+    }
+
+    public List<GithubUser> userList(int userId) {
         GithubObservableCommand githubObservableCommand = new GithubObservableCommand(userId);
 
         List<GithubUser> userList = new ArrayList<>();
@@ -28,9 +34,14 @@ public class UserInfoService {
         Observable<GithubUser> o1 = githubObservableCommand.observe();
         if (o1 == null) {
             System.out.println("UserInfoService: command observe error.");
-            return GithubUser.builder().build();
+            return new ArrayList<>();
         }
 
+        // AtomicReference<Boolean> refCompleted = new AtomicReference<>();
+        /**
+        * 在onError或者onCompleted被调用之后，subscribe方法才会返回
+         * 因此才能在onNext方法中接收多个结果
+        */
         o1.subscribe(new Observer(){
 
             @Override
@@ -45,8 +56,8 @@ public class UserInfoService {
 
             @Override
             public void onNext(Object o) {
+                System.out.println("UserInfoService: onNext_" + o);
                 if (o instanceof GithubUser) {
-                    System.out.println("UserInfoService: onNext_" + o);
                     userList.add((GithubUser)o);
                 }
             }
@@ -54,7 +65,6 @@ public class UserInfoService {
 
         System.out.println("UserInfoService:" + userId);
 
-        GithubCommand githubCommand = new GithubCommand(userId);
-        return githubCommand.execute();
+        return userList;
     }
 }

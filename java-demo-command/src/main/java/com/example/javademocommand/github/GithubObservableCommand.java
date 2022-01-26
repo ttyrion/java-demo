@@ -5,6 +5,7 @@ import com.example.javademodomain.github.GithubUser;
 import com.example.javademodomain.github.GithubUserResponse;
 import com.example.javademoutility.bean.DemoApplicationContext;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixObservableCommand;
 import rx.Observable;
 import rx.Observer;
@@ -22,7 +23,16 @@ public class GithubObservableCommand extends HystrixObservableCommand<GithubUser
     public GithubObservableCommand(int userId) {
         // super(HystrixCommandGroupKey.Factory.asKey("GithubGroup"));
 
-        super(HystrixObservableCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GithubGroup")));
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GithubGroup"))
+                /**
+                *  insert a command of this sort into a HystrixCommand constructor
+                */
+                .andCommandPropertiesDefaults(
+                        /**
+                        * next方法生产数据时的超时设置，超时则调用resumeWithFallback以及observer的onError
+                        */
+                        HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(5000)
+                ));
 
         this.userId = userId;
     }

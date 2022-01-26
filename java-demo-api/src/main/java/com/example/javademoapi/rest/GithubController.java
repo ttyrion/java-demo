@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * @Description:
  * @Date: Created on 16:50 2021/12/8
@@ -31,5 +33,15 @@ public class GithubController {
         LoggerProxy.console("GithubController", "user", "" + userId, ip);
 
         return Mono.just(userInfoService.user(userId));
+    }
+
+    @RequestMapping(value = "/users/{userId}",method = RequestMethod.GET)
+    public Mono<List<GithubUser>> users(@PathVariable int userId,
+                                        ServerWebExchange serverWebExchange) throws Exception {
+
+        String ip = serverWebExchange.getRequest().getRemoteAddress().getAddress().toString();
+        LoggerProxy.console("GithubController", "user", "" + userId, ip);
+
+        return Mono.just(userInfoService.userList(userId));
     }
 }
