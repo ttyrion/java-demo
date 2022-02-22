@@ -56,8 +56,10 @@ public class GithubClient {
             * GithubService是一个接口，不能直接调用，必须通过retrofit创建出GithubService实例
             */
             GithubService service = retrofit.create(GithubService.class);
-            Call<List<GithubUserResponse>> userCall = service.users();
-            return userCall.execute().body().get(0);
+            // Call<List<GithubUserResponse>> userCall = service.users();
+
+            Call<GithubUserResponse> userCall = service.user(id);
+            return userCall.execute().body();
         } catch (Exception exp) {
             LoggerProxy.console("GithubClient", "user", ""+ id, exp);
         }

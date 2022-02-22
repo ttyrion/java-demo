@@ -53,7 +53,7 @@ public class GithubObservableCommand extends HystrixObservableCommand<GithubUser
             */
             @Override
             protected Integer generateState() {
-                return 0;
+                return userId;
             }
 
             /**
@@ -66,19 +66,19 @@ public class GithubObservableCommand extends HystrixObservableCommand<GithubUser
             @Override
             protected Integer next(Integer state, Observer<? super GithubUser> observer) {
                 try {
-                    Thread.sleep(4000);
+                    Thread.sleep(1000);
                 } catch (Exception exp) {
                     observer.onError(new Exception("githubClient error"));
                     return state + 1;
                 }
 
-                if (state >= 3) {
+                if (state - userId >= 3) {
                     observer.onCompleted();
                     return state + 1;
                 }
 
                 GithubClient githubClient = DemoApplicationContext.getBean(GithubClient.class);
-                GithubUserResponse response = githubClient.user(userId, null);
+                GithubUserResponse response = githubClient.user(state, null);
                 GithubUser user = null;
                 if (response != null) {
                     user = new GithubUser(response.getId(), response.getLogin(), response.getAvatar_url());
