@@ -37,7 +37,9 @@ public class GithubObservableCommand extends HystrixObservableCommand<GithubUser
         this.userId = userId;
     }
 
-
+    /**
+    * Hystrix invokes the request to the dependency here.
+    */
     @Override
     protected Observable<GithubUser> construct() {
         /**

@@ -23,6 +23,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UserInfoService {
     public GithubUser user(int userId) {
         GithubCommand githubCommand = new GithubCommand(userId);
+        /**
+        * execute invokes queue().get()
+        * queue invokes toObservable().toBlocking().toFuture().\
+         * 这也就是说，实际上所有HystrixCommand（不仅仅是HystrixObservableCommand）背后都是基于Observable实现的，
+         * 即便是只返回单个数据的command。
+        */
         return githubCommand.execute();
     }
 
@@ -31,7 +37,11 @@ public class UserInfoService {
 
         List<GithubUser> userList = new ArrayList<>();
 
-        Observable<GithubUser> o1 = githubObservableCommand.observe();
+        /**
+        * toObservable returns cold observable
+         * observe returns hot observable
+        */
+        Observable<GithubUser> o1 = githubObservableCommand.toObservable();
         if (o1 == null) {
             System.out.println("UserInfoService: command observe error.");
             return new ArrayList<>();

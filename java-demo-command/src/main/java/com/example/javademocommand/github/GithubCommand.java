@@ -4,10 +4,7 @@ import com.example.javademoclient.github.GithubClient;
 import com.example.javademodomain.github.GithubUser;
 import com.example.javademodomain.github.GithubUserResponse;
 import com.example.javademoutility.bean.DemoApplicationContext;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixThreadPoolKey;
+import com.netflix.hystrix.*;
 
 /**
  * @Description: Hystrix: https://github.com/Netflix/Hystrix/wiki/
@@ -39,10 +36,24 @@ public class GithubCommand extends HystrixCommand<GithubUser> {
         // super(HystrixCommandGroupKey.Factory.asKey("GithubGroup"));
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("GithubGroup"))
                 .andCommandKey(HystrixCommandKey.Factory.asKey("GithubUser"))
-                .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("GithubGroupPool")));
+
+                /**
+                * 线程池名称
+                */
+                .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey("GithubGroupPool"))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(3))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withMaxQueueSize(100))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withKeepAliveTimeMinutes(1))
+                .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withQueueSizeRejectionThreshold(30)));
         this.userId = userId;
     }
 
+    /**
+     * Hystrix invokes the request to the dependency here.
+     * 如果HystrixCommand没有抛出任何异常且返回了一个响应，那Hystrix将在输出一些日志以及上报一些指标之后返回此响应。
+     * 如以此run方法为例，Hystrix返回一个发送单个响应的Observable对象且发出一个onCompleted通知。
+     * 如以construct方法为例，Hystrix返回construct()方法返回的那个Observable对象。
+     */
     @Override
     protected GithubUser run() throws Exception {
         GithubClient githubClient = DemoApplicationContext.getBean(GithubClient.class);
@@ -56,6 +67,22 @@ public class GithubCommand extends HystrixCommand<GithubUser> {
 
     /**
     * 默认是抛出异常："No fallback available."
+     * 什么情况下会调用Fallback？
+     * 1. In step 4, if the circuit is open (or “tripped” or "short circuit"), Hystrix will not execute the command
+     *    but immediately get the fallback.
+     * 2. In step 5, if the thread-pool and queue that are associated with the command are full, Hystrix will not execute the command
+     *    but immediately get the fallback.
+     * 3. In step 6, if run() or construct() method exceeds the command（ie, the hystrix command）’s timeout value,
+     *    the thread will throw a TimeoutException（ or a separate timer thread will, if the command itself is
+     *    not running in its own thread）.
+     *    这种情况下，Hystrix接着就会返回Fallback且忽略run() or construct()方法最终的返回值（如果此方法的执行没有被中断或者取消）。
+     *    注意，这里也就是说，即便是Hystrix已经返回（超时，fallback），对第三方依赖的请求仍然可能会继续。Hystrix所能做的只是抛出一个
+     *    InterruptedException。如果封装在HystrixCommand中的任务不对此异常进行处理，那么Hystrix线程池中的线程将继续工作，尽管此时
+     *    客户端代码已经收到了一个TimeoutException。
+     *
+     *    Note: 因此，尽管Hystrix已经成功减轻了负载，上述行为仍可能使得Hystrix线程池的任务饱和。多数Java HTTP客户端并不处理InterruptedException。
+     *    所以我们应该确保正确地配置一下所调用的HTTP库的r/w超时值。
+     *
     */
     @Override
     protected GithubUser getFallback() {
